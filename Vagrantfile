@@ -28,6 +28,9 @@ Vagrant.configure(2) do |config|
     # Uncomment the below lines if you have time sync
     # issues with make and incremental builds
     #vb.customize [ "guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 1000 ]
+
+    config.vagrant.plugins = "vagrant-vbguest"
+    config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
   end
 
   # This section allows you to customize the VMware VM
