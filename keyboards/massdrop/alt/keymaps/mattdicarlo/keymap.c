@@ -62,7 +62,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 
+// Access to the current RGB state.
 extern rgb_config_t rgb_matrix_config;
+
+
+// Set the first time we activate one of the layer effects.
+bool md_rgb_initialized = false;
+uint8_t md_rgb_prev_val = 120;
+
 
 // Runs just one time when the keyboard initializes.
 void matrix_init_user(void) {
@@ -141,6 +148,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 uint32_t layer_state_set_user(uint32_t state) {
     switch (biton32(state)) {
         case MAC:
+            if (md_rgb_initialized) {
+                md_rgb_prev_val = rgb_matrix_config.val;
+            }
             rgb_matrix_mode(RGB_MATRIX_SOLID_COLOR);
             rgb_matrix_sethsv(0, 0, 0);
 
@@ -148,16 +158,21 @@ uint32_t layer_state_set_user(uint32_t state) {
             break;
         case FN:
             rgb_matrix_mode(RGB_MATRIX_SOLID_MULTISPLASH);
-            rgb_matrix_sethsv(195, 0xff, 120);
+            rgb_matrix_sethsv(195, 0xff, md_rgb_prev_val);
+            md_rgb_initialized = true;
             //rgb_matrix_set_color(1, 0xff, 0x00, 0x00);
             break;
         case WIN:
+            if (md_rgb_initialized) {
+                md_rgb_prev_val = rgb_matrix_config.val;
+            }
             rgb_matrix_mode(RGB_MATRIX_SOLID_COLOR);
             rgb_matrix_sethsv(0, 0, 0);\
             break;
         case WFN:
             rgb_matrix_mode(RGB_MATRIX_SOLID_MULTISPLASH);
-            rgb_matrix_sethsv(95, 0xff, 120);
+            rgb_matrix_sethsv(95, 0xff, md_rgb_prev_val);
+            md_rgb_initialized = true;
             break;
 
         default:
