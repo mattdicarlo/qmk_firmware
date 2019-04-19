@@ -61,14 +61,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     */
 };
 
-
+#ifdef RGB_MATRIX_ENABLE
 // Access to the current RGB state.
 extern rgb_config_t rgb_matrix_config;
-
 
 // Set the first time we activate one of the layer effects.
 bool md_rgb_initialized = false;
 uint8_t md_rgb_prev_val = 120;
+#endif // RGB_MATRIX_ENABLE
 
 
 // Runs just one time when the keyboard initializes.
@@ -77,6 +77,7 @@ void matrix_init_user(void) {
 
 
 void keyboard_post_init_user(void) {
+#ifdef RGB_MATRIX_ENABLE
     rgb_matrix_enable();
     rgb_matrix_mode(RGB_MATRIX_SOLID_COLOR);
     rgb_matrix_sethsv(0, 0, 0);
@@ -84,6 +85,7 @@ void keyboard_post_init_user(void) {
     // Toggle once to set the lighting mode to just the keyswitches without underglow.
     // Gotta be a better way to do this.
     //rgb_matrix_toggle();
+#endif // RGB_MATRIX_ENABLE
 };
 
 
@@ -146,6 +148,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 uint32_t layer_state_set_user(uint32_t state) {
+#ifdef RGB_MATRIX_ENABLE
     switch (biton32(state)) {
         case MAC:
             if (md_rgb_initialized) {
@@ -178,10 +181,14 @@ uint32_t layer_state_set_user(uint32_t state) {
         default:
             break;
     }
+#endif // RGB_MATRIX_ENABLE
 
     return state;
 }
 
+
+#ifdef RGB_MATRIX_ENABLE
 //void rgb_matrix_indicators_user(void) {
 //    rgb_matrix_set_color(0, 0xff, 0x00, 0x00);
 //}
+#endif // RGB_MATRIX_ENABLE
